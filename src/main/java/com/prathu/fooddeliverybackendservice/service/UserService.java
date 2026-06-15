@@ -22,6 +22,7 @@ public class UserService {
     public String registerUser(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
 
         userRepository.save(user);
 
@@ -37,7 +38,10 @@ public class UserService {
         }
 
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return jwtUtil.generateToken(email);
+            return jwtUtil.generateToken(
+                    user.getEmail(),
+                    user.getRole()
+            );
         }
 
         return "Invalid Password";

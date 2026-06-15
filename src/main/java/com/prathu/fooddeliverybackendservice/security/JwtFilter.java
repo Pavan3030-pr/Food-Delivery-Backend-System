@@ -49,14 +49,19 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 🔥 ADD THIS PART (VERY IMPORTANT)
             String email = jwtUtil.extractEmail(token);
+            String role = jwtUtil.extractRole(token);
+
+            java.util.List<org.springframework.security.core.authority.SimpleGrantedAuthority> authorities =
+                    java.util.List.of(
+                            new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role)
+                    );
 
             org.springframework.security.authentication.UsernamePasswordAuthenticationToken authToken =
                     new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                             email,
                             null,
-                            new java.util.ArrayList<>()
+                            authorities
                     );
 
             org.springframework.security.core.context.SecurityContextHolder.getContext()

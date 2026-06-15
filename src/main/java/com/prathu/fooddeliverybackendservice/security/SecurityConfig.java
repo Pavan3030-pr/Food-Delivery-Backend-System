@@ -29,7 +29,21 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(auth -> auth
+
                 .requestMatchers("/login", "/register").permitAll()
+
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/restaurants")
+                .hasRole("ADMIN")
+
+                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/restaurants/**")
+                .hasRole("ADMIN")
+
+                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/restaurants/**")
+                .hasRole("ADMIN")
+
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/restaurants/**")
+                .hasAnyRole("USER", "ADMIN")
+
                 .anyRequest().authenticated()
         );
 
