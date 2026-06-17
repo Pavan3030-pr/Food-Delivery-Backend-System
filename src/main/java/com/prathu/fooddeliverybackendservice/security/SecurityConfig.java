@@ -3,6 +3,7 @@ package com.prathu.fooddeliverybackendservice.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,17 +33,15 @@ public class SecurityConfig {
 
                 .requestMatchers("/login", "/register").permitAll()
 
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/restaurants")
-                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/restaurants").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/restaurants/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/restaurants/**").hasAuthority("ROLE_ADMIN")
 
-                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/restaurants/**")
-                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/restaurants/**")
+                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
 
-                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/restaurants/**")
-                .hasRole("ADMIN")
-
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/restaurants/**")
-                .hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/menu-items/**").authenticated()
+                .requestMatchers("/orders/**").authenticated()
 
                 .anyRequest().authenticated()
         );
